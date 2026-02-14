@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Auto Loan Calculator - Calculate Your Car Payment 2026</title>
+    <meta name="description" content="Calculate your auto loan payment, total interest, and compare different loan terms. Free calculator shows monthly payments, total cost, and helps you find the best car loan.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        :root {
+            --navy: #1a2332;
+            --navy-light: #2d3e50;
+            --gold: #d4a574;
+            --gold-light: #e8c9a3;
+            --cream: #f8f6f3;
+            --white: #ffffff;
+            --text-dark: #1a2332;
+            --text-light: #5a6c7d;
+            --success: #2d7a4f;
+            --warning: #c97132;
+            --border: #e5e1dc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            padding: 32px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+        
+        .logo-accent {
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+        
+        .hero {
+            padding: 60px 0 120px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(38px, 6vw, 64px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        
+        .calculator-section {
+            margin-top: -80px;
+            padding-bottom: 80px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .calculator-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(26, 35, 50, 0.12);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+        
+        .section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            animation: slideIn 0.6s ease-out both;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 500;
+            pointer-events: none;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 32px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        select {
+            padding-left: 16px;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+        }
+        
+        .btn-calculate {
+            width: 100%;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.2);
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(26, 35, 50, 0.3);
+        }
+        
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 2px solid var(--border);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            border-color: var(--gold-light);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        
+        .result-value.highlight {
+            color: var(--success);
+        }
+        
+        .result-subtext {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recommendation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        
+        .recommendation p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        
+        .recommendation-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-affiliate {
+            padding: 12px 24px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .btn-affiliate:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        
+        .term-comparison {
+            background: var(--cream);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 32px;
+            border: 2px solid var(--border);
+        }
+        
+        .term-comparison h4 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .comparison-item {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+        
+        .comparison-term {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .comparison-detail {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+        
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 48px 0;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            text-align: center;
+        }
+        
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .calculator-card {
+                padding: 32px 24px;
+            }
+            
+            .hero {
+                padding: 40px 0 100px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function AutoLoanCalculator() {
+            const [formData, setFormData] = useState({
+                vehiclePrice: '',
+                downPayment: '',
+                tradeInValue: '',
+                interestRate: '',
+                loanTerm: '60'
+            });
+
+            const [results, setResults] = useState(null);
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            };
+
+            const calculateLoan = (principal, rate, months) => {
+                const monthlyRate = rate / 100 / 12;
+                const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                     (Math.pow(1 + monthlyRate, months) - 1);
+                const totalPaid = monthlyPayment * months;
+                const totalInterest = totalPaid - principal;
+                
+                return {
+                    monthlyPayment,
+                    totalPaid,
+                    totalInterest
+                };
+            };
+
+            const calculateResults = () => {
+                const price = parseFloat(formData.vehiclePrice);
+                const down = parseFloat(formData.downPayment) || 0;
+                const tradeIn = parseFloat(formData.tradeInValue) || 0;
+                const rate = parseFloat(formData.interestRate);
+                const term = parseInt(formData.loanTerm);
+
+                if (!price || !rate) {
+                    alert('Please fill in vehicle price and interest rate');
+                    return;
+                }
+
+                const loanAmount = price - down - tradeIn;
+                
+                if (loanAmount <= 0) {
+                    alert('Down payment and trade-in cannot exceed vehicle price');
+                    return;
+                }
+
+                const loan = calculateLoan(loanAmount, rate, term);
+                
+                // Compare different terms
+                const term36 = calculateLoan(loanAmount, rate, 36);
+                const term48 = calculateLoan(loanAmount, rate, 48);
+                const term60 = calculateLoan(loanAmount, rate, 60);
+                const term72 = calculateLoan(loanAmount, rate, 72);
+
+                setResults({
+                    ...loan,
+                    loanAmount,
+                    downPayment: down,
+                    tradeInValue: tradeIn,
+                    comparisons: {
+                        term36,
+                        term48,
+                        term60,
+                        term72
+                    }
+                });
+
+                setTimeout(() => {
+                    document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            };
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="container">
+                            <nav>
+                                <a href="index.html" className="logo">
+                                    Financial<span className="logo-accent">Freedom</span>
+                                </a>
+                                <ul className="nav-links">
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="mortgage.html">Mortgage</a></li>
+                                    <li><a href="debt.html">Debt</a></li>
+                                    <li><a href="auto.html" className="active">Auto Loan</a></li>
+                                    <li><a href="student.html">Student Loan</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container">
+                            <p className="hero-subtitle">Free Auto Loan Calculator</p>
+                            <h1>Calculate Your Car Payment</h1>
+                            <p className="hero-description">
+                                Find out your monthly car payment, total interest, and compare different loan terms. 
+                                Make informed decisions about your auto financing.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section className="calculator-section">
+                        <div className="container">
+                            <div className="calculator-card">
+                                <h2 className="section-title">Auto Loan Calculator</h2>
+                                <p className="section-subtitle">Enter your vehicle and loan details to calculate your monthly payment</p>
+
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label>Vehicle Price</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="vehiclePrice"
+                                                value={formData.vehiclePrice}
+                                                onChange={handleInputChange}
+                                                placeholder="35000"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Down Payment</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="downPayment"
+                                                value={formData.downPayment}
+                                                onChange={handleInputChange}
+                                                placeholder="5000"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Trade-In Value</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="tradeInValue"
+                                                value={formData.tradeInValue}
+                                                onChange={handleInputChange}
+                                                placeholder="8000"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Interest Rate (APR)</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">%</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="interestRate"
+                                                value={formData.interestRate}
+                                                onChange={handleInputChange}
+                                                placeholder="6.5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Loan Term</label>
+                                        <select
+                                            name="loanTerm"
+                                            value={formData.loanTerm}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="36">36 months (3 years)</option>
+                                            <option value="48">48 months (4 years)</option>
+                                            <option value="60">60 months (5 years)</option>
+                                            <option value="72">72 months (6 years)</option>
+                                            <option value="84">84 months (7 years)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button className="btn-calculate" onClick={calculateResults}>
+                                    Calculate My Payment
+                                </button>
+
+                                {results && (
+                                    <div className="results">
+                                        <h3 className="section-title">Your Auto Loan Results</h3>
+                                        
+                                        <div className="results-grid">
+                                            <div className="result-card">
+                                                <div className="result-label">Monthly Payment</div>
+                                                <div className="result-value highlight">
+                                                    {formatCurrency(results.monthlyPayment)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    {formData.loanTerm} month term
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Loan Amount</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(results.loanAmount)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    After down payment & trade-in
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Total Interest</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(results.totalInterest)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Over life of loan
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Total Cost</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(results.totalPaid + results.downPayment + results.tradeInValue)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Including down payment
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="term-comparison">
+                                            <h4>Compare Loan Terms</h4>
+                                            <p style={{color: 'var(--text-light)', marginBottom: '20px', fontSize: '15px'}}>
+                                                See how different loan terms affect your payment and total interest
+                                            </p>
+                                            <div className="comparison-grid">
+                                                <div className="comparison-item">
+                                                    <div className="comparison-term">36 Months</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Payment:</strong> {formatCurrency(results.comparisons.term36.monthlyPayment)}/mo
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.comparisons.term36.totalInterest)}
+                                                    </div>
+                                                </div>
+
+                                                <div className="comparison-item">
+                                                    <div className="comparison-term">48 Months</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Payment:</strong> {formatCurrency(results.comparisons.term48.monthlyPayment)}/mo
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.comparisons.term48.totalInterest)}
+                                                    </div>
+                                                </div>
+
+                                                <div className="comparison-item">
+                                                    <div className="comparison-term">60 Months</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Payment:</strong> {formatCurrency(results.comparisons.term60.monthlyPayment)}/mo
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.comparisons.term60.totalInterest)}
+                                                    </div>
+                                                </div>
+
+                                                <div className="comparison-item">
+                                                    <div className="comparison-term">72 Months</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Payment:</strong> {formatCurrency(results.comparisons.term72.monthlyPayment)}/mo
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.comparisons.term72.totalInterest)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="recommendation">
+                                            <h3>💡 Smart Auto Loan Tips</h3>
+                                            <p>
+                                                A shorter loan term means higher monthly payments but significantly less interest paid over time. 
+                                                Try to keep your auto loan under 60 months if possible. Also, aim for a down payment of at least 20% 
+                                                to avoid being underwater on your loan.
+                                            </p>
+                                            <div className="recommendation-actions">
+                                                <a 
+                                                    href="YOUR_AUTO_LENDER_AFFILIATE_LINK_HERE" 
+                                                    className="btn-affiliate"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Compare Auto Loan Rates →
+                                                </a>
+                                                <a 
+                                                    href="YOUR_SECOND_AUTO_AFFILIATE_LINK_HERE" 
+                                                    className="btn-affiliate"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Get Pre-Qualified →
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="footer-content container">
+                            <div className="logo" style={{marginBottom: '16px'}}>
+                                Financial<span className="logo-accent">Freedom</span>
+                            </div>
+                            <p>© 2026 FinancialFreedom. Free auto loan calculator.</p>
+                            <p style={{fontSize: '13px', marginTop: '12px'}}>
+                                This calculator provides estimates only. Actual rates and payments may vary. 
+                                Consult with a lender for personalized quotes.
+                            </p>
+                        </div>
+                    </footer>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AutoLoanCalculator />);
+    </script>
+</body>
+</html>

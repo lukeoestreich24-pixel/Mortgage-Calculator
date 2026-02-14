@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Student Loan Calculator - Calculate Repayment & Refinancing 2026</title>
+    <meta name="description" content="Calculate your student loan repayment, compare income-driven plans, and see if refinancing makes sense. Free calculator for federal and private student loans.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        :root {
+            --navy: #1a2332;
+            --navy-light: #2d3e50;
+            --gold: #d4a574;
+            --gold-light: #e8c9a3;
+            --cream: #f8f6f3;
+            --white: #ffffff;
+            --text-dark: #1a2332;
+            --text-light: #5a6c7d;
+            --success: #2d7a4f;
+            --warning: #c97132;
+            --border: #e5e1dc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            padding: 32px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+        
+        .logo-accent {
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+        
+        .hero {
+            padding: 60px 0 120px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(38px, 6vw, 64px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        
+        .calculator-section {
+            margin-top: -80px;
+            padding-bottom: 80px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .calculator-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(26, 35, 50, 0.12);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+        
+        .section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            animation: slideIn 0.6s ease-out both;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 500;
+            pointer-events: none;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 32px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        select {
+            padding-left: 16px;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+        }
+        
+        .btn-calculate {
+            width: 100%;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.2);
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(26, 35, 50, 0.3);
+        }
+        
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 2px solid var(--border);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            border-color: var(--gold-light);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        
+        .result-value.highlight {
+            color: var(--success);
+        }
+        
+        .result-value.warning {
+            color: var(--warning);
+        }
+        
+        .result-subtext {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recommendation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        
+        .recommendation p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        
+        .recommendation-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-affiliate {
+            padding: 12px 24px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .btn-affiliate:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        
+        .plan-comparison {
+            background: var(--cream);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 32px;
+            border: 2px solid var(--border);
+        }
+        
+        .plan-comparison h4 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .comparison-item {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+        
+        .comparison-plan {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .comparison-detail {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .comparison-detail strong {
+            color: var(--text-dark);
+        }
+        
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 48px 0;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            text-align: center;
+        }
+        
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .calculator-card {
+                padding: 32px 24px;
+            }
+            
+            .hero {
+                padding: 40px 0 100px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function StudentLoanCalculator() {
+            const [formData, setFormData] = useState({
+                loanBalance: '',
+                interestRate: '',
+                loanTerm: '10',
+                annualIncome: ''
+            });
+
+            const [results, setResults] = useState(null);
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            };
+
+            const calculateStandardLoan = (principal, rate, years) => {
+                const months = years * 12;
+                const monthlyRate = rate / 100 / 12;
+                const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                     (Math.pow(1 + monthlyRate, months) - 1);
+                const totalPaid = monthlyPayment * months;
+                const totalInterest = totalPaid - principal;
+                
+                return {
+                    monthlyPayment,
+                    totalPaid,
+                    totalInterest,
+                    payoffMonths: months
+                };
+            };
+
+            const calculateIncomeDriven = (principal, rate, income) => {
+                // Simplified income-driven calculation (10% of discretionary income)
+                const monthlyIncome = income / 12;
+                const povertyLine = 15060; // 2026 federal poverty line
+                const discretionaryIncome = Math.max(0, income - (povertyLine * 1.5));
+                const monthlyPayment = (discretionaryIncome * 0.10) / 12;
+                
+                // If payment doesn't cover interest, loan grows
+                const monthlyInterest = (principal * rate / 100) / 12;
+                
+                return {
+                    monthlyPayment: Math.max(monthlyPayment, 50), // Minimum $50
+                    monthlyInterest,
+                    payoffYears: 20 // Forgiven after 20 years
+                };
+            };
+
+            const calculateResults = () => {
+                const balance = parseFloat(formData.loanBalance);
+                const rate = parseFloat(formData.interestRate);
+                const term = parseInt(formData.loanTerm);
+                const income = parseFloat(formData.annualIncome) || 0;
+
+                if (!balance || !rate) {
+                    alert('Please fill in loan balance and interest rate');
+                    return;
+                }
+
+                // Standard repayment
+                const standard = calculateStandardLoan(balance, rate, term);
+                
+                // 10-year plan for comparison
+                const tenYear = calculateStandardLoan(balance, rate, 10);
+                
+                // 15-year plan
+                const fifteenYear = calculateStandardLoan(balance, rate, 15);
+                
+                // 20-year plan
+                const twentyYear = calculateStandardLoan(balance, rate, 20);
+                
+                // Income-driven (if income provided)
+                let incomeDriven = null;
+                if (income > 0) {
+                    incomeDriven = calculateIncomeDriven(balance, rate, income);
+                }
+
+                // Refinancing comparison (assuming 2% rate reduction)
+                const refinanceRate = Math.max(rate - 2, 2); // At least 2%
+                const refinanced = calculateStandardLoan(balance, refinanceRate, term);
+                const refinanceSavings = standard.totalInterest - refinanced.totalInterest;
+
+                setResults({
+                    standard,
+                    tenYear,
+                    fifteenYear,
+                    twentyYear,
+                    incomeDriven,
+                    refinanced,
+                    refinanceSavings,
+                    refinanceRate
+                });
+
+                setTimeout(() => {
+                    document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            };
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="container">
+                            <nav>
+                                <a href="index.html" className="logo">
+                                    Financial<span className="logo-accent">Freedom</span>
+                                </a>
+                                <ul className="nav-links">
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="mortgage.html">Mortgage</a></li>
+                                    <li><a href="debt.html">Debt</a></li>
+                                    <li><a href="auto.html">Auto Loan</a></li>
+                                    <li><a href="student.html" className="active">Student Loan</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container">
+                            <p className="hero-subtitle">Free Student Loan Calculator</p>
+                            <h1>Calculate Your Student Loan Repayment</h1>
+                            <p className="hero-description">
+                                Compare repayment plans, see if refinancing makes sense, and find the best strategy 
+                                to pay off your student loans faster.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section className="calculator-section">
+                        <div className="container">
+                            <div className="calculator-card">
+                                <h2 className="section-title">Student Loan Repayment Calculator</h2>
+                                <p className="section-subtitle">Enter your loan details to compare repayment options</p>
+
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label>Total Loan Balance</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="loanBalance"
+                                                value={formData.loanBalance}
+                                                onChange={handleInputChange}
+                                                placeholder="45000"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Interest Rate</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">%</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="interestRate"
+                                                value={formData.interestRate}
+                                                onChange={handleInputChange}
+                                                placeholder="5.5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Repayment Term</label>
+                                        <select
+                                            name="loanTerm"
+                                            value={formData.loanTerm}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="10">10 years (Standard)</option>
+                                            <option value="15">15 years (Extended)</option>
+                                            <option value="20">20 years (Extended)</option>
+                                            <option value="25">25 years (Extended)</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Annual Income (Optional)</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="annualIncome"
+                                                value={formData.annualIncome}
+                                                onChange={handleInputChange}
+                                                placeholder="50000"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button className="btn-calculate" onClick={calculateResults}>
+                                    Calculate My Repayment
+                                </button>
+
+                                {results && (
+                                    <div className="results">
+                                        <h3 className="section-title">Your Repayment Options</h3>
+                                        
+                                        <div className="results-grid">
+                                            <div className="result-card">
+                                                <div className="result-label">Monthly Payment</div>
+                                                <div className="result-value highlight">
+                                                    {formatCurrency(results.standard.monthlyPayment)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Standard {formData.loanTerm}-year plan
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Total Interest</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(results.standard.totalInterest)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Over life of loan
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Total Repaid</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(results.standard.totalPaid)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Principal + interest
+                                                </div>
+                                            </div>
+
+                                            {results.refinanceSavings > 1000 && (
+                                                <div className="result-card">
+                                                    <div className="result-label">Refinance Savings</div>
+                                                    <div className="result-value warning">
+                                                        {formatCurrency(results.refinanceSavings)}
+                                                    </div>
+                                                    <div className="result-subtext">
+                                                        At {results.refinanceRate.toFixed(2)}% rate
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="plan-comparison">
+                                            <h4>Compare Repayment Plans</h4>
+                                            <p style={{color: 'var(--text-light)', marginBottom: '20px', fontSize: '15px'}}>
+                                                See how different repayment terms affect your monthly payment and total interest
+                                            </p>
+                                            <div className="comparison-grid">
+                                                <div className="comparison-item">
+                                                    <div className="comparison-plan">10-Year Standard</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Monthly:</strong> {formatCurrency(results.tenYear.monthlyPayment)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.tenYear.totalInterest)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Total:</strong> {formatCurrency(results.tenYear.totalPaid)}
+                                                    </div>
+                                                </div>
+
+                                                <div className="comparison-item">
+                                                    <div className="comparison-plan">15-Year Extended</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Monthly:</strong> {formatCurrency(results.fifteenYear.monthlyPayment)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.fifteenYear.totalInterest)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Total:</strong> {formatCurrency(results.fifteenYear.totalPaid)}
+                                                    </div>
+                                                </div>
+
+                                                <div className="comparison-item">
+                                                    <div className="comparison-plan">20-Year Extended</div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Monthly:</strong> {formatCurrency(results.twentyYear.monthlyPayment)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Interest:</strong> {formatCurrency(results.twentyYear.totalInterest)}
+                                                    </div>
+                                                    <div className="comparison-detail">
+                                                        <strong>Total:</strong> {formatCurrency(results.twentyYear.totalPaid)}
+                                                    </div>
+                                                </div>
+
+                                                {results.incomeDriven && (
+                                                    <div className="comparison-item">
+                                                        <div className="comparison-plan">Income-Driven (Est.)</div>
+                                                        <div className="comparison-detail">
+                                                            <strong>Monthly:</strong> {formatCurrency(results.incomeDriven.monthlyPayment)}
+                                                        </div>
+                                                        <div className="comparison-detail">
+                                                            <strong>Based on income:</strong> 10% of discretionary
+                                                        </div>
+                                                        <div className="comparison-detail">
+                                                            <strong>Forgiveness:</strong> After 20 years
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {results.refinanceSavings > 1000 && (
+                                            <div className="recommendation">
+                                                <h3>💰 Refinancing Could Save You {formatCurrency(results.refinanceSavings)}</h3>
+                                                <p>
+                                                    Based on current market rates, you could potentially save significant interest by refinancing 
+                                                    to a lower rate. Your monthly payment would be {formatCurrency(results.refinanced.monthlyPayment)}, 
+                                                    saving you {formatCurrency(results.standard.monthlyPayment - results.refinanced.monthlyPayment)} per month.
+                                                </p>
+                                                <p style={{fontSize: '14px', marginBottom: '24px'}}>
+                                                    ⚠️ Note: Refinancing federal loans means losing federal protections like income-driven repayment 
+                                                    and potential forgiveness programs.
+                                                </p>
+                                                <div className="recommendation-actions">
+                                                    <a 
+                                                        href="YOUR_STUDENT_LOAN_REFI_AFFILIATE_LINK_HERE" 
+                                                        className="btn-affiliate"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        Compare Refinance Rates →
+                                                    </a>
+                                                    <a 
+                                                        href="YOUR_SECOND_STUDENT_AFFILIATE_LINK_HERE" 
+                                                        className="btn-affiliate"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        Check Your Rate →
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {!results.incomeDriven && (
+                                            <div className="recommendation">
+                                                <h3>💡 Consider Income-Driven Repayment</h3>
+                                                <p>
+                                                    Add your annual income above to see if you qualify for income-driven repayment plans. 
+                                                    These plans cap your payment at 10-15% of discretionary income and offer loan forgiveness 
+                                                    after 20-25 years.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="footer-content container">
+                            <div className="logo" style={{marginBottom: '16px'}}>
+                                Financial<span className="logo-accent">Freedom</span>
+                            </div>
+                            <p>© 2026 FinancialFreedom. Free student loan calculator.</p>
+                            <p style={{fontSize: '13px', marginTop: '12px'}}>
+                                This calculator provides estimates only. Actual payments and forgiveness eligibility vary. 
+                                Consult with a student loan advisor for personalized guidance.
+                            </p>
+                        </div>
+                    </footer>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<StudentLoanCalculator />);
+    </script>
+</body>
+</html>

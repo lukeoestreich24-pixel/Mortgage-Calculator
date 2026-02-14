@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Debt Consolidation Calculator - Should You Consolidate in 2026?</title>
+    <meta name="description" content="Calculate your potential savings from consolidating your debts. Free calculator shows monthly savings, total interest reduction, and payoff timeline. Get personalized consolidation recommendations instantly.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Free Debt Consolidation Calculator - Calculate Your Savings">
+    <meta property="og:description" content="See if debt consolidation makes sense. Calculate monthly savings, total interest savings, and payoff timeline in seconds.">
+    <meta property="og:type" content="website">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        :root {
+            --navy: #1a2332;
+            --navy-light: #2d3e50;
+            --gold: #d4a574;
+            --gold-light: #e8c9a3;
+            --cream: #f8f6f3;
+            --white: #ffffff;
+            --text-dark: #1a2332;
+            --text-light: #5a6c7d;
+            --success: #2d7a4f;
+            --warning: #c97132;
+            --border: #e5e1dc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Geometric background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: 
+                linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            padding: 32px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+        
+        .logo-accent {
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 60px 0 120px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(38px, 6vw, 64px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        
+        /* Calculator Card */
+        .calculator-section {
+            margin-top: -80px;
+            padding-bottom: 80px;
+        }
+        
+        .calculator-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 
+                0 4px 6px rgba(0, 0, 0, 0.05),
+                0 10px 30px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .calculator-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            color: var(--navy);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .calculator-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        
+        /* Form Layout */
+        .calculator-form {
+            display: grid;
+            gap: 48px;
+        }
+        
+        .form-section {
+            background: var(--cream);
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--navy);
+            margin-bottom: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: var(--gold);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tooltip {
+            color: var(--text-light);
+            cursor: help;
+            font-size: 16px;
+        }
+        
+        .form-input {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            background: var(--white);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+        
+        /* Debt List */
+        .debt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .debt-item {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+        
+        .remove-btn {
+            padding: 10px 16px;
+            background: var(--warning);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 46px;
+        }
+        
+        .remove-btn:hover {
+            background: #b5642b;
+            transform: translateY(-1px);
+        }
+        
+        .add-debt-btn {
+            padding: 14px 24px;
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+        
+        .add-debt-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+        }
+        
+        /* Calculate Button */
+        .calculate-btn-wrapper {
+            text-align: center;
+            padding-top: 16px;
+        }
+        
+        .calculate-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(26, 35, 50, 0.2);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26, 35, 50, 0.3);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Results Section */
+        .results-section {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 2px solid var(--border);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .results-summary {
+            background: linear-gradient(135deg, var(--success) 0%, #246640 100%);
+            color: var(--white);
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .results-summary.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #b5642b 100%);
+        }
+        
+        .results-summary h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .results-summary p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .result-card {
+            background: var(--cream);
+            padding: 28px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            text-align: center;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            color: var(--navy);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .result-subtext {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .comparison-section {
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .comparison-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--navy);
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .comparison-column {
+            padding: 24px;
+            border-radius: 8px;
+        }
+        
+        .comparison-column.current {
+            background: #fef3e8;
+            border: 2px solid var(--gold-light);
+        }
+        
+        .comparison-column.consolidated {
+            background: #e8f5ee;
+            border: 2px solid var(--success);
+        }
+        
+        .comparison-column h4 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--navy);
+        }
+        
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-item:last-child {
+            border-bottom: none;
+        }
+        
+        .comparison-item-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .comparison-item-value {
+            font-weight: 700;
+            color: var(--navy);
+        }
+        
+        /* Recommendation */
+        .recommendation {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 32px;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+        
+        .recommendation p {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        
+        .recommendation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-affiliate {
+            display: inline-block;
+            padding: 16px 32px;
+            background: var(--gold);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-affiliate:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+        }
+        
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 32px;
+        }
+        
+        .content-card {
+            padding: 32px;
+            background: var(--cream);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .content-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 22px;
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+        
+        .content-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 0;
+            background: var(--cream);
+        }
+        
+        .faq-item {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .faq-question {
+            font-family: 'Crimson Pro', serif;
+            font-size: 20px;
+            color: var(--navy);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .faq-answer {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 48px 0;
+            text-align: center;
+        }
+        
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calculator-card {
+                padding: 32px 24px;
+            }
+            
+            .debt-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function DebtConsolidationCalculator() {
+            const [debts, setDebts] = useState([
+                { id: 1, name: 'Credit Card 1', balance: 5000, rate: 19.99, payment: 150 },
+                { id: 2, name: 'Credit Card 2', balance: 3000, rate: 22.99, payment: 100 },
+            ]);
+            
+            const [consolidationLoan, setConsolidationLoan] = useState({
+                rate: 10.0,
+                term: 5
+            });
+            
+            const [results, setResults] = useState(null);
+
+            const addDebt = () => {
+                const newId = Math.max(...debts.map(d => d.id), 0) + 1;
+                setDebts([...debts, { 
+                    id: newId, 
+                    name: `Debt ${newId}`, 
+                    balance: 0, 
+                    rate: 0, 
+                    payment: 0 
+                }]);
+            };
+
+            const removeDebt = (id) => {
+                if (debts.length > 1) {
+                    setDebts(debts.filter(d => d.id !== id));
+                }
+            };
+
+            const updateDebt = (id, field, value) => {
+                setDebts(debts.map(d => 
+                    d.id === id ? { ...d, [field]: value } : d
+                ));
+            };
+
+            const calculateResults = () => {
+                // Calculate current debt totals
+                const totalBalance = debts.reduce((sum, d) => sum + parseFloat(d.balance || 0), 0);
+                const currentMonthlyPayment = debts.reduce((sum, d) => sum + parseFloat(d.payment || 0), 0);
+                
+                // Calculate total interest for current debts
+                let totalCurrentInterest = 0;
+                let weightedPayoffMonths = 0;
+                
+                debts.forEach(debt => {
+                    const balance = parseFloat(debt.balance || 0);
+                    const rate = parseFloat(debt.rate || 0) / 100 / 12;
+                    const payment = parseFloat(debt.payment || 0);
+                    
+                    if (balance > 0 && payment > 0 && rate > 0) {
+                        // Calculate months to pay off this debt
+                        const months = Math.log(payment / (payment - balance * rate)) / Math.log(1 + rate);
+                        const totalPaid = payment * months;
+                        const interest = totalPaid - balance;
+                        
+                        totalCurrentInterest += interest;
+                        weightedPayoffMonths = Math.max(weightedPayoffMonths, months);
+                    }
+                });
+                
+                // Calculate consolidation loan details
+                const consRate = parseFloat(consolidationLoan.rate || 0) / 100 / 12;
+                const consTerm = parseFloat(consolidationLoan.term || 1) * 12;
+                
+                // Monthly payment for consolidation loan
+                const consMonthlyPayment = totalBalance * 
+                    (consRate * Math.pow(1 + consRate, consTerm)) / 
+                    (Math.pow(1 + consRate, consTerm) - 1);
+                
+                const totalConsolidationPaid = consMonthlyPayment * consTerm;
+                const totalConsolidationInterest = totalConsolidationPaid - totalBalance;
+                
+                // Calculate savings
+                const monthlySavings = currentMonthlyPayment - consMonthlyPayment;
+                const interestSavings = totalCurrentInterest - totalConsolidationInterest;
+                const totalSavings = (currentMonthlyPayment * weightedPayoffMonths) - totalConsolidationPaid;
+                
+                // Determine if consolidation is recommended
+                const shouldConsolidate = interestSavings > 0 || monthlySavings > 0;
+                
+                setResults({
+                    // Current debts
+                    totalBalance,
+                    currentMonthlyPayment,
+                    totalCurrentInterest,
+                    currentPayoffMonths: weightedPayoffMonths,
+                    
+                    // Consolidated loan
+                    consMonthlyPayment,
+                    totalConsolidationInterest,
+                    consolidationTerm: consTerm,
+                    
+                    // Savings
+                    monthlySavings,
+                    interestSavings,
+                    totalSavings,
+                    
+                    // Recommendation
+                    shouldConsolidate
+                });
+            };
+
+            const formatCurrency = (value) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                }).format(value);
+            };
+
+            const formatMonths = (months) => {
+                const years = Math.floor(months / 12);
+                const remainingMonths = Math.round(months % 12);
+                
+                if (years === 0) {
+                    return `${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+                } else if (remainingMonths === 0) {
+                    return `${years} year${years !== 1 ? 's' : ''}`;
+                } else {
+                    return `${years} year${years !== 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+                }
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="container">
+                            <nav>
+                                <a href="index.html" className="logo">
+                                    Financial<span className="logo-accent">Freedom</span>
+                                </a>
+                                <ul className="nav-links">
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="mortgage.html">Mortgage</a></li>
+                                    <li><a href="debt.html" className="active">Debt</a></li>
+                                    <li><a href="auto.html">Auto Loan</a></li>
+                                    <li><a href="student.html">Student Loan</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container">
+                            <div className="hero-subtitle">Free Debt Consolidation Calculator</div>
+                            <h1>See How Much You Could Save</h1>
+                            <p className="hero-description">
+                                Calculate your potential savings by consolidating high-interest debts into one 
+                                lower-rate loan. Find out your new monthly payment and total interest savings in seconds.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section className="calculator-section">
+                        <div className="container">
+                            <div className="calculator-card">
+                                <div className="calculator-header">
+                                    <h2 className="calculator-title">Debt Consolidation Calculator</h2>
+                                    <p className="calculator-subtitle">
+                                        Enter your current debts and see if consolidation makes sense for you
+                                    </p>
+                                </div>
+
+                                <form className="calculator-form" onSubmit={(e) => { e.preventDefault(); calculateResults(); }}>
+                                    {/* Current Debts Section */}
+                                    <div className="form-section">
+                                        <h3 className="section-title">
+                                            <span className="section-number">1</span>
+                                            Your Current Debts
+                                        </h3>
+                                        
+                                        <div className="debt-list">
+                                            {debts.map((debt) => (
+                                                <div key={debt.id} className="debt-item">
+                                                    <div className="form-group">
+                                                        <label className="form-label">Debt Name</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-input"
+                                                            value={debt.name}
+                                                            onChange={(e) => updateDebt(debt.id, 'name', e.target.value)}
+                                                            placeholder="e.g., Credit Card"
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div className="form-group">
+                                                        <label className="form-label">Balance</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-input"
+                                                            value={debt.balance}
+                                                            onChange={(e) => updateDebt(debt.id, 'balance', e.target.value)}
+                                                            placeholder="$5,000"
+                                                            step="100"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div className="form-group">
+                                                        <label className="form-label">Interest Rate (%)</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-input"
+                                                            value={debt.rate}
+                                                            onChange={(e) => updateDebt(debt.id, 'rate', e.target.value)}
+                                                            placeholder="19.99"
+                                                            step="0.01"
+                                                            min="0"
+                                                            max="100"
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div className="form-group">
+                                                        <label className="form-label">Monthly Payment</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-input"
+                                                            value={debt.payment}
+                                                            onChange={(e) => updateDebt(debt.id, 'payment', e.target.value)}
+                                                            placeholder="$150"
+                                                            step="10"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    
+                                                    {debts.length > 1 && (
+                                                        <button 
+                                                            type="button"
+                                                            className="remove-btn"
+                                                            onClick={() => removeDebt(debt.id)}
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        
+                                        <button type="button" className="add-debt-btn" onClick={addDebt}>
+                                            + Add Another Debt
+                                        </button>
+                                    </div>
+
+                                    {/* Consolidation Loan Section */}
+                                    <div className="form-section">
+                                        <h3 className="section-title">
+                                            <span className="section-number">2</span>
+                                            Consolidation Loan Details
+                                        </h3>
+                                        
+                                        <div className="form-grid">
+                                            <div className="form-group">
+                                                <label className="form-label">
+                                                    New Interest Rate (%)
+                                                    <span className="tooltip" title="The interest rate for your consolidation loan">ⓘ</span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    className="form-input"
+                                                    value={consolidationLoan.rate}
+                                                    onChange={(e) => setConsolidationLoan({...consolidationLoan, rate: e.target.value})}
+                                                    placeholder="10.00"
+                                                    step="0.01"
+                                                    min="0"
+                                                    max="100"
+                                                />
+                                            </div>
+                                            
+                                            <div className="form-group">
+                                                <label className="form-label">
+                                                    Loan Term (Years)
+                                                    <span className="tooltip" title="How long you'll take to repay the loan">ⓘ</span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    className="form-input"
+                                                    value={consolidationLoan.term}
+                                                    onChange={(e) => setConsolidationLoan({...consolidationLoan, term: e.target.value})}
+                                                    placeholder="5"
+                                                    step="1"
+                                                    min="1"
+                                                    max="30"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="calculate-btn-wrapper">
+                                        <button type="submit" className="calculate-btn">
+                                            Calculate Savings
+                                        </button>
+                                    </div>
+                                </form>
+
+                                {/* Results Section */}
+                                {results && (
+                                    <div className="results-section">
+                                        <div className={`results-summary ${!results.shouldConsolidate ? 'warning' : ''}`}>
+                                            <h3>
+                                                {results.shouldConsolidate 
+                                                    ? `You Could Save ${formatCurrency(Math.abs(results.totalSavings))}!` 
+                                                    : 'Consolidation May Not Be Ideal'}
+                                            </h3>
+                                            <p>
+                                                {results.shouldConsolidate 
+                                                    ? 'Based on your numbers, debt consolidation could help you pay off debt faster and save money.'
+                                                    : 'Based on your current debts, consolidation may not provide significant savings. Consider other debt payoff strategies.'}
+                                            </p>
+                                        </div>
+
+                                        <div className="results-grid">
+                                            <div className="result-card">
+                                                <div className="result-label">Monthly Savings</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(Math.abs(results.monthlySavings))}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    {results.monthlySavings > 0 ? 'Lower payment' : 'Higher payment'}
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="result-card">
+                                                <div className="result-label">Interest Savings</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(Math.abs(results.interestSavings))}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Total interest saved
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="result-card">
+                                                <div className="result-label">Total Savings</div>
+                                                <div className="result-value">
+                                                    {formatCurrency(Math.abs(results.totalSavings))}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Over the life of the loan
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Comparison */}
+                                        <div className="comparison-section">
+                                            <h3 className="comparison-title">Side-by-Side Comparison</h3>
+                                            <div className="comparison-grid">
+                                                <div className="comparison-column current">
+                                                    <h4>Current Debts</h4>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Total Balance</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.totalBalance)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Monthly Payment</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.currentMonthlyPayment)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Total Interest</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.totalCurrentInterest)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Payoff Time</span>
+                                                        <span className="comparison-item-value">{formatMonths(results.currentPayoffMonths)}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="comparison-column consolidated">
+                                                    <h4>With Consolidation</h4>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Total Balance</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.totalBalance)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Monthly Payment</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.consMonthlyPayment)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Total Interest</span>
+                                                        <span className="comparison-item-value">{formatCurrency(results.totalConsolidationInterest)}</span>
+                                                    </div>
+                                                    <div className="comparison-item">
+                                                        <span className="comparison-item-label">Payoff Time</span>
+                                                        <span className="comparison-item-value">{formatMonths(results.consolidationTerm)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="recommendation">
+                                            <h3>
+                                                {results.shouldConsolidate ? '✓ Consolidation Recommended' : '⚠ Consider Alternatives'}
+                                            </h3>
+                                            <p>
+                                                {results.shouldConsolidate 
+                                                    ? `Based on your numbers, consolidating your debts could save you ${formatCurrency(Math.abs(results.monthlySavings))} per month and ${formatCurrency(Math.abs(results.interestSavings))} in interest. This could help you become debt-free faster while simplifying your monthly payments.`
+                                                    : `Based on your current situation, consolidation may not provide significant savings. Consider the debt avalanche or snowball method, or wait for better loan rates.`
+                                                }
+                                            </p>
+                                            
+                                            {results.shouldConsolidate && (
+                                                <div className="recommendation-actions">
+                                                    <a 
+                                                        href="YOUR_LENDING_CLUB_AFFILIATE_LINK_HERE" 
+                                                        className="btn-affiliate"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={() => {
+                                                            console.log('LendingClub affiliate click');
+                                                        }}
+                                                    >
+                                                        Compare Debt Consolidation Loans →
+                                                    </a>
+                                                    <a 
+                                                        href="YOUR_SOFI_OR_UPSTART_AFFILIATE_LINK_HERE" 
+                                                        className="btn-affiliate"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={() => {
+                                                            console.log('Second affiliate click');
+                                                        }}
+                                                    >
+                                                        Check Your Rate in 2 Minutes →
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="content-section">
+                        <div className="container">
+                            <h2 className="section-title" style={{textAlign: 'center', marginBottom: '20px'}}>
+                                Why Consolidate Your Debts?
+                            </h2>
+                            <div className="content-grid">
+                                <div className="content-card">
+                                    <h3>Lower Interest Rates</h3>
+                                    <p>
+                                        High-interest credit cards often charge 18-25% APR. A debt consolidation 
+                                        loan typically offers rates between 6-15%, potentially saving you thousands 
+                                        in interest charges over time.
+                                    </p>
+                                </div>
+                                <div className="content-card">
+                                    <h3>Simplify Your Payments</h3>
+                                    <p>
+                                        Instead of juggling multiple due dates and minimum payments, consolidation 
+                                        combines everything into one monthly payment. This makes budgeting easier 
+                                        and reduces the risk of missed payments.
+                                    </p>
+                                </div>
+                                <div className="content-card">
+                                    <h3>Pay Off Debt Faster</h3>
+                                    <p>
+                                        With lower interest rates and a structured repayment plan, more of your 
+                                        payment goes toward the principal balance. This helps you become debt-free 
+                                        sooner than making minimum payments on multiple cards.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="faq-section">
+                        <div className="container">
+                            <h2 className="section-title" style={{textAlign: 'center', marginBottom: '48px'}}>
+                                Common Debt Consolidation Questions
+                            </h2>
+                            
+                            <div className="faq-item">
+                                <div className="faq-question">What is debt consolidation?</div>
+                                <div className="faq-answer">
+                                    Debt consolidation is the process of combining multiple debts (like credit cards, personal 
+                                    loans, or medical bills) into a single loan with one monthly payment. The goal is typically 
+                                    to secure a lower interest rate, simplify payments, and potentially pay off debt faster.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">When should I consolidate my debts?</div>
+                                <div className="faq-answer">
+                                    Debt consolidation makes sense when you can qualify for a lower interest rate than your 
+                                    current debts, have multiple high-interest debts that are difficult to manage, and have 
+                                    steady income to make consistent payments. It's most beneficial for credit card debt with 
+                                    rates above 15%.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">Will consolidation hurt my credit score?</div>
+                                <div className="faq-answer">
+                                    Initially, debt consolidation may cause a small dip in your credit score due to the hard 
+                                    credit inquiry. However, making on-time payments and reducing your credit utilization can 
+                                    improve your score over time. The long-term impact is typically positive if you manage the 
+                                    consolidation loan responsibly.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">What types of debt can I consolidate?</div>
+                                <div className="faq-answer">
+                                    You can consolidate most types of unsecured debt including credit card balances, personal 
+                                    loans, medical bills, payday loans, and some student loans. Secured debts like mortgages 
+                                    and auto loans typically cannot be included in a standard debt consolidation loan.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">What credit score do I need to consolidate debt?</div>
+                                <div className="faq-answer">
+                                    Most lenders prefer a credit score of 650 or higher for debt consolidation loans, with the 
+                                    best rates typically available to borrowers with scores above 700. However, some lenders 
+                                    offer consolidation options for lower credit scores, though rates may be higher.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="footer-content container">
+                            <div className="logo" style={{marginBottom: '16px'}}>
+                                Financial<span className="logo-accent">Freedom</span>
+                            </div>
+                            <p>© 2026 FinancialFreedom. Free debt consolidation calculator.</p>
+                            <p style={{fontSize: '13px', marginTop: '12px'}}>
+                                This calculator provides estimates only. Actual rates and savings may vary. 
+                                Consult with a licensed financial professional for personalized advice.
+                            </p>
+                        </div>
+                    </footer>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DebtConsolidationCalculator />);
+    </script>
+</body>
+</html>

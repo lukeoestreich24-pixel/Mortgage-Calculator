@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Mortgage Refinance Calculator - Should You Refinance in 2026?</title>
+    <meta name="description" content="Calculate your potential savings from refinancing your mortgage. Free calculator shows monthly savings, lifetime interest reduction, and break-even timeline. Get personalized refinance recommendations instantly.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Free Mortgage Refinance Calculator - Calculate Your Savings">
+    <meta property="og:description" content="See if refinancing makes sense. Calculate monthly savings, total interest savings, and break-even timeline in seconds.">
+    <meta property="og:type" content="website">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        :root {
+            --navy: #1a2332;
+            --navy-light: #2d3e50;
+            --gold: #d4a574;
+            --gold-light: #e8c9a3;
+            --cream: #f8f6f3;
+            --white: #ffffff;
+            --text-dark: #1a2332;
+            --text-light: #5a6c7d;
+            --success: #2d7a4f;
+            --warning: #c97132;
+            --border: #e5e1dc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Geometric background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: 
+                linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            padding: 32px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+        
+        .logo-accent {
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 60px 0 120px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(38px, 6vw, 64px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        
+        /* Calculator Card */
+        .calculator-section {
+            margin-top: -80px;
+            padding-bottom: 80px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .calculator-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(26, 35, 50, 0.12);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+        
+        .section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            animation: slideIn 0.6s ease-out both;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+        .form-group:nth-child(6) { animation-delay: 0.35s; }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 500;
+            pointer-events: none;
+        }
+        
+        input[type="number"],
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 32px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+        }
+        
+        /* Calculate Button */
+        .btn-calculate {
+            width: 100%;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.2);
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(26, 35, 50, 0.3);
+        }
+        
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        
+        /* Results Section */
+        .results {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 2px solid var(--border);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            border-color: var(--gold-light);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        
+        .result-value.positive {
+            color: var(--success);
+        }
+        
+        .result-value.negative {
+            color: var(--warning);
+        }
+        
+        .result-subtext {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+        
+        /* Recommendation Box */
+        .recommendation {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recommendation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        
+        .recommendation p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        
+        .recommendation-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-affiliate {
+            padding: 12px 24px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .btn-affiliate:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Email Capture */
+        .email-capture {
+            background: var(--cream);
+            padding: 32px;
+            border-radius: 16px;
+            margin-top: 32px;
+            border: 2px solid var(--border);
+        }
+        
+        .email-capture h4 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .email-capture p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        .email-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .email-form input {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .btn-email {
+            padding: 14px 28px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .btn-email:hover {
+            background: var(--navy-light);
+        }
+        
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 48px;
+            margin-top: 48px;
+        }
+        
+        .content-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        
+        .content-card p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            background: var(--white);
+            padding: 80px 0;
+        }
+        
+        .faq-item {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-question {
+            font-family: 'Crimson Pro', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .faq-answer {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 48px 0;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            text-align: center;
+        }
+        
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calculator-card {
+                padding: 32px 24px;
+            }
+            
+            .hero {
+                padding: 40px 0 100px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .email-form {
+                flex-direction: column;
+            }
+            
+            .email-form input {
+                min-width: 100%;
+            }
+        }
+        
+        .success-message {
+            background: var(--success);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function MortgageCalculator() {
+            const [formData, setFormData] = useState({
+                currentLoanAmount: '',
+                currentInterestRate: '',
+                remainingYears: '',
+                newInterestRate: '',
+                closingCosts: '3000',
+                email: ''
+            });
+
+            const [results, setResults] = useState(null);
+            const [emailSubmitted, setEmailSubmitted] = useState(false);
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            };
+
+            const calculateMortgage = (principal, rate, years) => {
+                const monthlyRate = rate / 100 / 12;
+                const payments = years * 12;
+                const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, payments)) / 
+                                     (Math.pow(1 + monthlyRate, payments) - 1);
+                return monthlyPayment;
+            };
+
+            const calculateResults = () => {
+                const loanAmount = parseFloat(formData.currentLoanAmount);
+                const currentRate = parseFloat(formData.currentInterestRate);
+                const newRate = parseFloat(formData.newInterestRate);
+                const years = parseFloat(formData.remainingYears);
+                const closing = parseFloat(formData.closingCosts);
+
+                if (!loanAmount || !currentRate || !newRate || !years) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                const currentPayment = calculateMortgage(loanAmount, currentRate, years);
+                const newPayment = calculateMortgage(loanAmount, newRate, years);
+                const monthlySavings = currentPayment - newPayment;
+                
+                const currentTotalInterest = (currentPayment * years * 12) - loanAmount;
+                const newTotalInterest = (newPayment * years * 12) - loanAmount;
+                const lifetimeSavings = currentTotalInterest - newTotalInterest - closing;
+                
+                const breakEvenMonths = closing / monthlySavings;
+
+                const shouldRefinance = monthlySavings > 0 && lifetimeSavings > 0 && breakEvenMonths < (years * 12);
+
+                setResults({
+                    currentPayment,
+                    newPayment,
+                    monthlySavings,
+                    lifetimeSavings,
+                    breakEvenMonths,
+                    shouldRefinance
+                });
+
+                // Scroll to results
+                setTimeout(() => {
+                    document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            };
+
+            const handleEmailSubmit = (e) => {
+                e.preventDefault();
+                if (formData.email) {
+                    // In production, send to your email service (ConvertKit, Mailchimp, etc.)
+                    console.log('Email captured:', formData.email);
+                    setEmailSubmitted(true);
+                    
+                    // Here you would integrate with your email service
+                    // Example: 
+                    // fetch('/api/subscribe', {
+                    //     method: 'POST',
+                    //     body: JSON.stringify({ email: formData.email, results })
+                    // });
+                }
+            };
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            };
+
+            const formatMonths = (months) => {
+                const years = Math.floor(months / 12);
+                const remainingMonths = Math.round(months % 12);
+                if (years > 0) {
+                    return `${years} year${years > 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+                }
+                return `${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="container">
+                            <nav>
+                                <a href="index.html" className="logo">
+                                    Financial<span className="logo-accent">Freedom</span>
+                                </a>
+                                <ul className="nav-links">
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="mortgage.html" className="active">Mortgage</a></li>
+                                    <li><a href="debt.html">Debt</a></li>
+                                    <li><a href="auto.html">Auto Loan</a></li>
+                                    <li><a href="student.html">Student Loan</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container">
+                            <p className="hero-subtitle">Free Mortgage Refinance Calculator</p>
+                            <h1>Should You Refinance Your Mortgage in 2026?</h1>
+                            <p className="hero-description">
+                                Calculate your potential savings in seconds. See your monthly payment reduction, 
+                                total interest savings, and break-even timeline with our free refinance calculator.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section className="calculator-section">
+                        <div className="container">
+                            <div className="calculator-card">
+                                <h2 className="section-title">Calculate Your Refinance Savings</h2>
+                                <p className="section-subtitle">Enter your current mortgage details to see if refinancing makes sense</p>
+
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label>Current Loan Balance</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="currentLoanAmount"
+                                                value={formData.currentLoanAmount}
+                                                onChange={handleInputChange}
+                                                placeholder="350000"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Current Interest Rate</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">%</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="currentInterestRate"
+                                                value={formData.currentInterestRate}
+                                                onChange={handleInputChange}
+                                                placeholder="6.5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Remaining Years</label>
+                                        <div className="input-wrapper">
+                                            <input
+                                                type="number"
+                                                name="remainingYears"
+                                                value={formData.remainingYears}
+                                                onChange={handleInputChange}
+                                                placeholder="25"
+                                            />
+                                            <span className="input-suffix">years</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>New Interest Rate</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">%</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="newInterestRate"
+                                                value={formData.newInterestRate}
+                                                onChange={handleInputChange}
+                                                placeholder="5.5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Estimated Closing Costs</label>
+                                        <div className="input-wrapper">
+                                            <span className="input-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                name="closingCosts"
+                                                value={formData.closingCosts}
+                                                onChange={handleInputChange}
+                                                placeholder="3000"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button className="btn-calculate" onClick={calculateResults}>
+                                    Calculate My Savings
+                                </button>
+
+                                {results && (
+                                    <div className="results">
+                                        <h3 className="section-title">Your Refinance Analysis</h3>
+                                        
+                                        <div className="results-grid">
+                                            <div className="result-card">
+                                                <div className="result-label">Monthly Savings</div>
+                                                <div className={`result-value ${results.monthlySavings > 0 ? 'positive' : 'negative'}`}>
+                                                    {formatCurrency(results.monthlySavings)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    New payment: {formatCurrency(results.newPayment)}/mo
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Lifetime Savings</div>
+                                                <div className={`result-value ${results.lifetimeSavings > 0 ? 'positive' : 'negative'}`}>
+                                                    {formatCurrency(results.lifetimeSavings)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Total interest saved over loan term
+                                                </div>
+                                            </div>
+
+                                            <div className="result-card">
+                                                <div className="result-label">Break-Even Point</div>
+                                                <div className="result-value">
+                                                    {formatMonths(results.breakEvenMonths)}
+                                                </div>
+                                                <div className="result-subtext">
+                                                    Time to recover closing costs
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="recommendation">
+                                            <h3>
+                                                {results.shouldRefinance ? '✓ Refinancing Recommended' : '⚠ Consider Carefully'}
+                                            </h3>
+                                            <p>
+                                                {results.shouldRefinance 
+                                                    ? `Based on your numbers, refinancing could save you ${formatCurrency(results.monthlySavings)} per month and ${formatCurrency(results.lifetimeSavings)} over the life of your loan. You'll break even in ${formatMonths(results.breakEvenMonths)}.`
+                                                    : `Based on your current situation, refinancing may not provide significant savings. Consider waiting for better rates or exploring other options.`
+                                                }
+                                            </p>
+                                            
+                                            {results.shouldRefinance && (
+                                                <div className="recommendation-actions">
+                                                    <a href="#" className="btn-affiliate" onClick={(e) => {
+                                                        e.preventDefault();
+                                                        // Affiliate link - Replace with actual LendingTree/Better.com affiliate link
+                                                        console.log('Affiliate click tracked');
+                                                        alert('In production, this would redirect to your affiliate partner (LendingTree, Better.com, etc.)');
+                                                    }}>
+                                                        Compare Rates from Top Lenders
+                                                    </a>
+                                                    <a href="#" className="btn-affiliate" onClick={(e) => {
+                                                        e.preventDefault();
+                                                        console.log('Second affiliate click tracked');
+                                                        alert('Another affiliate partner option');
+                                                    }}>
+                                                        Get Pre-Qualified Today
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="email-capture">
+                                            <h4>Get Your Personalized Refinance Guide</h4>
+                                            <p>
+                                                Receive a detailed PDF report with your results, plus our free 7-day email course 
+                                                on maximizing your refinance savings.
+                                            </p>
+                                            {!emailSubmitted ? (
+                                                <form className="email-form" onSubmit={handleEmailSubmit}>
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleInputChange}
+                                                        placeholder="your@email.com"
+                                                        required
+                                                    />
+                                                    <button type="submit" className="btn-email">
+                                                        Send Me the Guide
+                                                    </button>
+                                                </form>
+                                            ) : (
+                                                <div className="success-message">
+                                                    ✓ Success! Check your email for your personalized refinance guide.
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="content-section">
+                        <div className="container">
+                            <h2 className="section-title" style={{textAlign: 'center', marginBottom: '20px'}}>
+                                Why Refinance Your Mortgage?
+                            </h2>
+                            <div className="content-grid">
+                                <div className="content-card">
+                                    <h3>Lower Your Monthly Payment</h3>
+                                    <p>
+                                        Even a 1% reduction in your interest rate can save you hundreds per month. 
+                                        With rates fluctuating in 2026, now could be the perfect time to lock in 
+                                        a lower rate and reduce your monthly housing costs.
+                                    </p>
+                                </div>
+                                <div className="content-card">
+                                    <h3>Save Thousands in Interest</h3>
+                                    <p>
+                                        Over the life of a 30-year mortgage, a lower interest rate can save you 
+                                        $50,000 or more in total interest payments. Use our calculator above to 
+                                        see your exact savings potential.
+                                    </p>
+                                </div>
+                                <div className="content-card">
+                                    <h3>Shorten Your Loan Term</h3>
+                                    <p>
+                                        Refinancing to a shorter term (like 15 years) can help you build equity 
+                                        faster and become mortgage-free sooner. While monthly payments may increase, 
+                                        you'll pay significantly less interest overall.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="faq-section">
+                        <div className="container">
+                            <h2 className="section-title" style={{textAlign: 'center', marginBottom: '48px'}}>
+                                Common Refinancing Questions
+                            </h2>
+                            
+                            <div className="faq-item">
+                                <div className="faq-question">When should I refinance my mortgage?</div>
+                                <div className="faq-answer">
+                                    Generally, refinancing makes sense when you can lower your interest rate by at least 
+                                    0.75-1%, plan to stay in your home long enough to recoup closing costs (usually 2-4 years), 
+                                    and have good credit. Use our calculator to determine your specific break-even point.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">How much does it cost to refinance?</div>
+                                <div className="faq-answer">
+                                    Typical closing costs for refinancing range from 2-5% of your loan amount, usually 
+                                    between $2,000-$5,000. This includes appraisal fees, title insurance, origination fees, 
+                                    and other processing costs. Some lenders offer no-closing-cost refinances, but these 
+                                    usually come with slightly higher interest rates.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">How long does refinancing take?</div>
+                                <div className="faq-answer">
+                                    The refinancing process typically takes 30-45 days from application to closing. This 
+                                    includes time for credit checks, home appraisal, underwriting, and final approval. Some 
+                                    digital-first lenders can complete the process in as little as 2-3 weeks.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">Will refinancing hurt my credit score?</div>
+                                <div className="faq-answer">
+                                    Refinancing may cause a small, temporary dip in your credit score (usually 5-10 points) 
+                                    due to the hard credit inquiry. However, this impact is minor and your score typically 
+                                    recovers within a few months. The long-term benefits of lower payments often outweigh 
+                                    this short-term effect.
+                                </div>
+                            </div>
+
+                            <div className="faq-item">
+                                <div className="faq-question">Can I refinance with bad credit?</div>
+                                <div className="faq-answer">
+                                    While it's possible to refinance with less-than-perfect credit, you'll typically need a 
+                                    credit score of at least 620 for conventional loans. FHA refinancing may be available with 
+                                    scores as low as 580. However, better credit scores (740+) will qualify you for the best rates.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="footer-content container">
+                            <div className="logo" style={{marginBottom: '16px'}}>
+                                Financial<span className="logo-accent">Freedom</span>
+                            </div>
+                            <p>© 2026 FinancialFreedom. Free mortgage refinance calculator.</p>
+                            <p style={{fontSize: '13px', marginTop: '12px'}}>
+                                This calculator provides estimates only. Actual rates and savings may vary. 
+                                Consult with a licensed mortgage professional for personalized advice.
+                            </p>
+                        </div>
+                    </footer>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MortgageCalculator />);
+    </script>
+</body>
+</html>

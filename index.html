@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Freedom Calculators - Free Tools for Mortgages, Loans & Debt</title>
+    <meta name="description" content="Free financial calculators to help you make smart money decisions. Calculate mortgage refinance savings, auto loans, student loans, and debt consolidation options.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy: #1a2332;
+            --navy-light: #2d3e50;
+            --gold: #d4a574;
+            --gold-light: #e8c9a3;
+            --cream: #f8f6f3;
+            --white: #ffffff;
+            --text-dark: #1a2332;
+            --text-light: #5a6c7d;
+            --success: #2d7a4f;
+            --border: #e5e1dc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70vh;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            padding: 32px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-accent {
+            color: var(--gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 140px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(42px, 7vw, 72px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+        }
+        
+        .hero-subtitle {
+            font-size: 22px;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .hero-description {
+            font-size: 19px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 700px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            margin-top: 48px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: 'Crimson Pro', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+        
+        /* Calculators Grid */
+        .calculators-section {
+            padding: 80px 0;
+            margin-top: -100px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        
+        .section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+        
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+        
+        .calculator-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        
+        .calculator-card:nth-child(1) { animation-delay: 0.1s; }
+        .calculator-card:nth-child(2) { animation-delay: 0.2s; }
+        .calculator-card:nth-child(3) { animation-delay: 0.3s; }
+        .calculator-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(26, 35, 50, 0.15);
+            border-color: var(--gold-light);
+        }
+        
+        .calculator-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .calculator-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 24px;
+        }
+        
+        .calculator-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+        
+        .calculator-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        
+        .calculator-features {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+        
+        .calculator-features li {
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .calculator-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: 700;
+        }
+        
+        .btn-calculator {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .btn-calculator:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(26, 35, 50, 0.3);
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 48px;
+            margin-top: 48px;
+        }
+        
+        .feature {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            background: var(--cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px;
+            border: 2px solid var(--border);
+        }
+        
+        .feature h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .feature p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 64px 0 32px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+        
+        .footer-section h4 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        
+        .footer-section p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .calculators-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 60px 0 120px;
+            }
+            
+            .hero-stats {
+                gap: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    Financial<span class="logo-accent">Freedom</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mortgage.html">Mortgage</a></li>
+                    <li><a href="debt.html">Debt</a></li>
+                    <li><a href="auto.html">Auto Loan</a></li>
+                    <li><a href="student.html">Student Loan</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="hero-subtitle">Free Financial Calculators</p>
+            <h1>Make Smarter Money Decisions</h1>
+            <p class="hero-description">
+                Calculate potential savings from refinancing, consolidating debt, or optimizing your loans. 
+                Professional-grade tools, completely free. No signup required.
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">$1M+</div>
+                    <div class="stat-label">Total Savings Calculated</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">People Helped</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Free Calculators</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="calculators-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your Calculator</h2>
+                <p class="section-subtitle">Select the tool that matches your financial situation</p>
+            </div>
+            
+            <div class="calculators-grid">
+                <div class="calculator-card">
+                    <div class="calculator-icon">🏠</div>
+                    <h3>Mortgage Refinance</h3>
+                    <p>Calculate if refinancing your mortgage makes financial sense based on current rates and your situation.</p>
+                    <ul class="calculator-features">
+                        <li>Monthly payment savings</li>
+                        <li>Lifetime interest reduction</li>
+                        <li>Break-even timeline</li>
+                        <li>Personalized recommendations</li>
+                    </ul>
+                    <a href="mortgage.html" class="btn-calculator">Calculate Savings →</a>
+                </div>
+
+                <div class="calculator-card">
+                    <div class="calculator-icon">💳</div>
+                    <h3>Debt Consolidation</h3>
+                    <p>See how much you could save by consolidating multiple debts into a single lower-rate loan.</p>
+                    <ul class="calculator-features">
+                        <li>Multi-debt tracking</li>
+                        <li>Interest savings calculator</li>
+                        <li>Payoff timeline comparison</li>
+                        <li>Monthly payment reduction</li>
+                    </ul>
+                    <a href="debt.html" class="btn-calculator">Calculate Savings →</a>
+                </div>
+
+                <div class="calculator-card">
+                    <div class="calculator-icon">🚗</div>
+                    <h3>Auto Loan</h3>
+                    <p>Calculate monthly payments, total interest, and find the best auto loan terms for your budget.</p>
+                    <ul class="calculator-features">
+                        <li>Monthly payment calculator</li>
+                        <li>Trade-in value integration</li>
+                        <li>Loan term comparisons</li>
+                        <li>Total cost breakdown</li>
+                    </ul>
+                    <a href="auto.html" class="btn-calculator">Calculate Payment →</a>
+                </div>
+
+                <div class="calculator-card">
+                    <div class="calculator-icon">🎓</div>
+                    <h3>Student Loan</h3>
+                    <p>Plan your student loan repayment, compare refinancing options, and calculate potential savings.</p>
+                    <ul class="calculator-features">
+                        <li>Repayment plan comparison</li>
+                        <li>Refinancing analysis</li>
+                        <li>Income-driven plan calculator</li>
+                        <li>Forgiveness timeline</li>
+                    </ul>
+                    <a href="student.html" class="btn-calculator">Calculate Repayment →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Use Our Calculators?</h2>
+                <p class="section-subtitle">Professional tools designed to help you make informed financial decisions</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Free & Private</h3>
+                    <p>No signup, no email required. Your financial information stays on your device and is never stored or shared.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Accurate Calculations</h3>
+                    <p>Professional-grade algorithms used by financial advisors. Get precise results you can trust.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">💡</div>
+                    <h3>Clear Recommendations</h3>
+                    <p>Not just numbers—get actionable insights and personalized recommendations based on your results.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Use our calculators on any device. All tools are optimized for mobile, tablet, and desktop.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Financial<span style="color: var(--gold);">Freedom</span></h4>
+                    <p>Free financial calculators to help you make smarter money decisions. Calculate mortgage refinance savings, loan payments, and debt consolidation options.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Calculators</h4>
+                    <ul class="footer-links">
+                        <li><a href="mortgage.html">Mortgage Refinance Calculator</a></li>
+                        <li><a href="debt.html">Debt Consolidation Calculator</a></li>
+                        <li><a href="auto.html">Auto Loan Calculator</a></li>
+                        <li><a href="student.html">Student Loan Calculator</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Financial Tips</a></li>
+                        <li><a href="#">Refinancing Guide</a></li>
+                        <li><a href="#">Debt Management</a></li>
+                        <li><a href="#">Loan Comparison</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 FinancialFreedom Calculators. All calculators provide estimates only. Consult with a financial professional for personalized advice.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
